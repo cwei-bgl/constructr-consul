@@ -1,7 +1,7 @@
 version: "2"
 services:
   consul1:
-    image: "consul:0.8.0"
+    image: "consul:0.8.3"
     container_name: "consul1"
     hostname: "consul1"
     environment:
@@ -11,7 +11,7 @@ services:
       - "8600:53"
     command: "agent -server -bootstrap -client=0.0.0.0 -node-id=5a3ff1a9-4447-4733-8dda-e8166e0b5c21 -ui"
   consul2:
-    image: "consul:0.8.0"
+    image: "consul:0.8.3"
     container_name: "consul2"
     hostname: "consul2"
     expose:
@@ -29,13 +29,23 @@ services:
     depends_on:
       - consul1
       - consul2
+  consul3:
+    image: "consul:0.8.3"
+    container_name: "consul3"
+    hostname: "consul3"
+    expose:
+      - "8500"
+      - "8600"
+    command: "agent -join=consul1 -client=0.0.0.0 -node-id='5750045d-9dc8-0ec7-14a4-70bf94c3a7f1'"
+    depends_on:
+      - consul1
   akka_node2:
     image: "constructr-coordination-demo:latest"
     container_name: "akka_node2"
     hostname: "akka_node2"
     depends_on:
       - consul1
-      - consul2
+      - consul3
   akka_node3:
     image: "constructr-coordination-demo:latest"
     container_name: "akka_node3"
